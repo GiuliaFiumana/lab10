@@ -2,10 +2,12 @@ package it.unibo.oop.lab.lambda;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -85,8 +87,16 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Map.merge
          */
-        return emptyMap();
+        final Map<R, Set<T>> mappa = new HashMap<>();
+        final BiFunction<Set<T>, Set<T>, Set<T>> union = (set1, set2) -> {
+            final Set<T> primo = new LinkedHashSet<>(set1);
+            primo.addAll(set2);
+            return primo;
+        };
+        list.forEach(t -> mappa.merge(op.apply(t), Set.of(t), union));
+        return mappa;
     }
+
 
     /**
      * @param map
